@@ -1,0 +1,19 @@
+{
+  "name": "swag/order-scheduler",
+  "description": "Order Scheduler",
+  "type": "shopware-platform-plugin",
+  "license": "MIT",
+  "version": "v1.0.0",
+  "autoload": {
+    "psr-4": {
+      "OrderScheduler\\": "src/"
+    }
+  },
+  "extra": {
+    "shopware-plugin-class": "OrderScheduler\\OrderScheduler",
+    "label": {
+      "de-DE": "Order Scheduler",
+      "en-GB": "Order Scheduler"
+    }
+  }
+}
