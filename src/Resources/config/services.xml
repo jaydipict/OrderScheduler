@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="OrderScheduler\Subscriber\OrderCustomerSubscriber">
+            <argument type="service" id="customer_address.repository"/>
+            <argument type="service" id="mail_template_type.repository"/>
+            <argument type="service" id="Shopware\Core\Framework\Adapter\Translation\Translator"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="OrderScheduler\Service\CustomCartController" public="true">
+            <argument type="service" id="OrderScheduler\Service\CustomCartHandler"/>
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="OrderScheduler\Service\CustomCartHandler">
+            <tag name="shopware.cart.line_item.factory" />
+        </service>
+
+        <service id="OrderScheduler\Core\Content\Extension\ProductExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
+        <service id="OrderScheduler\Core\Content\SetProduct\SetProductDefinition">
+            <tag name="shopware.entity.definition" entity="set_product" />
+        </service>
+    </services>
+</container>

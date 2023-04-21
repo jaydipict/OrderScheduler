@@ -1,0 +1,145 @@
+{% block addtocard_popup_product_sections %}
+<div class="modal fade " id="customAddToCart" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">{{ "orderScheduler.popupTitle"|trans }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="productDetailPageBuyProductForm" action="{{ path('frontend.custom.addtocart') }}" method="post" class="buy-widget" data-add-to-cart="true">
+                {{ sw_csrf('frontend.custom.addtocart') }}
+                <div class="modal-body">
+                    <p>{{ "orderScheduler.popupContent"|trans }}</p>
+                    {% set buyable = product.available and product.childCount <= 0 and product.calculatedMaxPurchase > 0 %}
+                        {% if buyable %}
+                            <div class="form-row buy-widget-container">
+                                {# Customer Address #}
+                                {% block customer_address_container %}
+                                    <div class="col-3 form-group"><label>{{ "orderScheduler.label-address"|trans }}</label></div>
+                                    <div class="col-9 form-group">
+                                        <select name="option[address]" class="form-control" id="oderAddress" data-order-scheduler-address>
+                                            <option value="">{{ "orderScheduler.option-address"|trans }}</option>
+                                            {% for customerAddres in customerAddress %}
+                                                {% set addres = customerAddres.street ~ ',' ~ customerAddres.zipcode ~ ' ' ~ customerAddres.city ~' ' ~ customerAddres.countryState.translated.name ~ ', ' ~ customerAddres.country.translated.name %}
+                                                <option value="{{ addres }}">{{ addres }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <span class="error error-address">{{ "orderScheduler.error-address"|trans }}</span>
+                                    </div>
+                                {% endblock %}
+
+                                {# Product Quantity #}
+                                {% block page_product_detail_buy_quantity_container %}
+                                  <div class="col-3 form-group"><label>{{ "orderScheduler.label-quantity"|trans }}</label></div>
+                                  <div class="col-9 form-group">
+                                      {% block page_product_detail_buy_quantity %}
+                                          <select name="lineItems[{{ product.id }}][quantity]"
+                                                  class="custom-select product-detail-quantity-select">
+                                              {% for quantity in range(product.minPurchase, product.calculatedMaxPurchase, product.purchaseSteps) %}
+                                                  <option value="{{ quantity }}">
+                                                      {{ quantity }}
+                                                      {% if quantity == 1 %}
+                                                          {% if product.translated.packUnit %} {{ product.translated.packUnit }}{% endif %}
+                                                      {% else %}
+                                                          {% if product.translated.packUnitPlural %}
+                                                              {{ product.translated.packUnitPlural }}
+                                                          {% elseif product.translated.packUnit %}
+                                                              {{ product.translated.packUnit }}
+                                                          {% endif %}
+                                                      {% endif %}
+                                                  </option>
+                                              {% endfor %}
+                                          </select>
+                                          <span class="error error-quantity">{{ "orderScheduler.error-quantity"|trans }}</span>
+                                      {% endblock %}
+                                  </div>
+                                {% endblock %}
+
+                                {# Product From Date #}
+                                {% block product_from_date_container %}
+                                    <div class="col-3 form-group"><label>{{ "orderScheduler.label-from"|trans }}</label></div>
+                                    <div class="col-9 form-group">
+                                        <input type="text" name="option[fromDate]" data-date-picker="true" data-date-format="d-m-Y" data-alt-format="d-m-Y" data-enable-time="false" data-min-date="today" id="startDate" data-order-scheduler-startdate>
+                                        <span class="error error-startDate">{{ "orderScheduler.error-startDate"|trans }}</span>
+                                    </div>
+                                {% endblock %}
+
+                                {# Product Until Date #}
+                                {% block product_until_date_container %}
+                                  <div class="col-3 form-group"><label>{{ "orderScheduler.label-until"|trans }}</label></div>
+                                  <div class="col-9 form-group">
+                                        <input type="text" name="option[untilDate]" data-date-picker="true" data-date-format="d-m-Y" data-alt-format="d-m-Y" data-enable-time="false" data-min-date="{{ game.gameDate|date_modify("+7 day")|date("d-m-Y") }}" id="endDate" data-order-scheduler-enddate>
+                                        <span class="error error-endDate">{{ "orderScheduler.error-endDate"|trans }}</span>
+                                        <span class="error error-endDateChk">{{ "orderScheduler.error-endDatechk"|trans }}</span>
+                                    </div>
+                                {% endblock %}
+
+                                {# Product On #}
+                                {% block product_on_day_container %}
+                                  <div class="col-3 form-group"><label>{{ "orderScheduler.label-on"|trans }}</label></div>
+                                  <div class="col-9 form-group">
+                                        <div>
+                                        <input type="checkbox" name="option[day][]" class="orderdays" value="{{ "orderScheduler.label-op-monday"|trans }}" data-order-scheduler-days> {{ "orderScheduler.label-op-monday"|trans }}
+                                        <input type="checkbox" name="option[day][]" class="orderdays" value="{{ "orderScheduler.label-op-tuesday"|trans }}" data-order-scheduler-days> {{ "orderScheduler.label-op-tuesday"|trans }}<br>
+                                        <input type="checkbox" name="option[day][]" class="orderdays" value="{{ "orderScheduler.label-op-wednesday"|trans }}" data-order-scheduler-days> {{ "orderScheduler.label-op-wednesday"|trans }}
+                                        <input type="checkbox" name="option[day][]" class="orderdays" value="{{ "orderScheduler.label-op-thursday"|trans }}" data-order-scheduler-days> {{ "orderScheduler.label-op-thursday"|trans }}<br>
+                                        <input type="checkbox" name="option[day][]" class="orderdays" value="{{ "orderScheduler.label-op-friday"|trans }}" data-order-scheduler-days> {{ "orderScheduler.label-op-friday"|trans }}
+                                        <input type="checkbox" name="option[day][]" class="orderdays" value="{{ "orderScheduler.label-op-saturday"|trans }}" data-order-scheduler-days> {{ "orderScheduler.label-op-saturday"|trans }}
+                                        </div>
+                                        <span class="error error-orderdays">{{ "orderScheduler.error-orderdays"|trans }}</span>
+                                    </div>
+                                {% endblock %}
+
+                                {# Product each #}
+                                {% block product_week_container %}
+                                  <div class="col-3 form-group"><label>{{ "orderScheduler.label-each"|trans }}</label></div>
+                                  <div class="col-9 form-group">
+                                      <select name="option[weeks]" class="form-control" id="weeks" data-order-scheduler-weeks>
+                                          <option value="">{{ "orderScheduler.label-eachweeks"|trans }}</option>
+                                          <option value="{{ "orderScheduler.op-one"|trans }}">{{ "orderScheduler.op-one"|trans }}</option>
+                                          <option value="{{ "orderScheduler.op-two"|trans }}">{{ "orderScheduler.op-two"|trans }}</option>
+                                          <option value="{{ "orderScheduler.op-three"|trans }}">{{ "orderScheduler.op-three"|trans }}</option>
+                                          <option value="{{ "orderScheduler.op-four"|trans }}">{{ "orderScheduler.op-four"|trans }}</option>
+                                          <option value="{{ "orderScheduler.op-five"|trans }}">{{ "orderScheduler.op-five"|trans }}</option>
+                                      </select>
+                                      <span class="error error-weeks">{{ "orderScheduler.error-weeks"|trans }}</span>
+                                  </div>
+                                {% endblock %}
+
+
+                                {% block page_product_detail_buy_redirect_input %}
+                                  {# fallback redirect back to detail page is deactivated via js #}
+                                  <input type="hidden" name="redirectTo" value="frontend.detail.page">
+                                  <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value='{"productId": "{{ product.id }}"}'>
+                                {% endblock %}
+
+
+                                {% block page_product_detail_buy_product_buy_info %}
+                                  <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
+                                  <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
+                                  <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
+                                  <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
+                                  <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
+                                {% endblock %}
+
+                                {% block page_product_detail_product_buy_meta %}
+                                    <input type="hidden" name="product-name" value="{{ product.translated.name }}">
+                                    <input type="hidden" name="brand-name" value="{{ product.manufacturer.getName() }}">
+                                {% endblock %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <template id="scheduler-button">
+                            <button class="btn btn-primary btn-buy realButton" title="Add to shopping cart" aria-label="Add to shopping cart" style="display: none">{{ "orderScheduler.add-cart-btn"|trans }}</button>
+                        </template>
+                        <button class="btn btn-primary btn-buy" title="Add to shopping cart" aria-label="Add to shopping cart" data-order-scheduler-button>{{ "orderScheduler.add-cart-btn"|trans }}</button>
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

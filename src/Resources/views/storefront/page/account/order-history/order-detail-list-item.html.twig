@@ -1,0 +1,17 @@
+{% sw_extends '@Storefront/storefront/page/account/order-history/order-detail-list-item.html.twig' %}
+
+{% block page_account_order_item_detail_variants %}
+    {{ parent() }}
+        <div class="order-item-variants">
+            {% if lineItem.payload.fromDate %}
+                <div class="order-item-variants-properties-name">{{ "orderScheduler.cart-schedule"|trans }} </div> {{ "orderScheduler.label-from"|trans }} {{ lineItem.payload.fromDate }}
+                {{ "orderScheduler.label-until"|trans }} {{ lineItem.payload.untilDate }}, {{ lineItem.payload.weeks }},
+                {{ "orderScheduler.label-on"|trans }} {{ lineItem.payload.days }}
+            {% endif %}
+        </div>
+        <div class="order-item-variants">
+            {% if lineItem.payload.address %}
+                <div class="order-item-variants-properties-name"> {{ "orderScheduler.cart-address"|trans }} </div> {{ lineItem.payload.address }}
+            {% endif %}
+        </div>
+{% endblock %}

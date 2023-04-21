@@ -1,0 +1,10 @@
+{
+    "set-products": {
+        "title": "Set Product",
+        "cart-address" : "Lieferadresse : ",
+        "cart-schedule" : "Lieferungsplan : ",
+        "label-from" : "Van",
+        "label-until" : "Tot",
+        "label-on" : "OP"
+    }
+}

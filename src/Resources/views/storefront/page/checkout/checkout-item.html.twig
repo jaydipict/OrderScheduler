@@ -1,0 +1,25 @@
+{% sw_extends '@Storefront/storefront/page/checkout/checkout-item.html.twig' %}
+{% block page_checkout_item_info_ordernumber %}
+    {% if lineItem.payload.productNumber %}
+        <div class="cart-item-ordernumber">
+            {{ "checkout.cartItemInfoId"|trans|sw_sanitize }} {{ lineItem.payload.productNumber }}
+        </div>
+    {% endif %}
+
+    {% if lineItem.payload.fromDate %}
+        <div class="cart-item-ordernumber">
+            {{ "orderScheduler.cart-schedule"|trans }} {{ "orderScheduler.label-from"|trans }} {{ lineItem.payload.fromDate }}
+            {{ "orderScheduler.label-until"|trans }} {{ lineItem.payload.untilDate }}, {{ lineItem.payload.weeks }},
+            {% if lineItem.payload.days %}
+                {{ "orderScheduler.label-on"|trans }} {{ lineItem.payload.days }}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if lineItem.payload.address %}
+    <div class="cart-item-ordernumber">
+        {{ "orderScheduler.cart-address"|trans }} {{ lineItem.payload.address }}
+    </div>
+    {% endif %}
+{% endblock %}
+

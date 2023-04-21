@@ -1,0 +1,10 @@
+{% block sw_order_line_items_grid_column_payload_options %}
+    {% parent %}
+    <span v-if="item.payload.fromDate">
+        {{ $t("set-products.cart-schedule") }}
+        {{ $t("set-products.label-from") }} {{ item.payload.fromDate }}
+        {{ $t("set-products.label-until") }} {{ item.payload.untilDate }} , {{ item.payload.weeks }} ,
+        {{ $t("set-products.label-on") }} {{ item.payload.days }}
+    </span><br>
+    <span v-if="item.payload.address">{{ $t("set-products.cart-address") }} {{ item.payload.address }}</span>
+{% endblock %}
