@@ -2,6 +2,8 @@
 
 namespace OrderScheduler\Service;
 
+use DateInterval;
+use DatePeriod;
 use DateTime;
 use OrderScheduler\Service\CustomCartHandler;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
@@ -42,7 +44,7 @@ class CustomCartController extends StorefrontController
     /**
      * @Route("/cartAdd", name="frontend.custom.addtocart", methods={"POST"}, defaults={"XmlHttpRequest"=true})
      */
-    public function add(Cart $cart, SalesChannelContext $context, RequestDataBag $requestDataBag, Request $request) : \Symfony\Component\HttpFoundation\Response
+    public function add(Cart $cart, SalesChannelContext $context, RequestDataBag $requestDataBag, Request $request): \Symfony\Component\HttpFoundation\Response
     {
         $options = array();
         $lineItems = $request->request->get('lineItems', []);
@@ -52,11 +54,11 @@ class CustomCartController extends StorefrontController
         $optionsarray['fromDate'] = $requestDataBag->get('option')->get('fromDate');
         $optionsarray['untilDate'] = $requestDataBag->get('option')->get('untilDate');
         $optionsarray['weeks'] = $requestDataBag->get('option')->get('weeks');
-        $days = $requestDataBag->get('option')->get('day',[]);
+        $days = $requestDataBag->get('option')->get('day', []);
         $days = \reset($days);
-        if(!empty($days)){
-            $optionsarray['days'] = implode(', ',$days);
-        }else{
+        if (!empty($days)) {
+            $optionsarray['days'] = implode(', ', $days);
+        } else {
             $optionsarray['days'] = '';
         }
 
@@ -77,7 +79,7 @@ class CustomCartController extends StorefrontController
         $endDate = new DateTime($endDate);
 
         // iterate over start to end date
-        while($startDate <= $endDate ){
+        while ($startDate <= $endDate) {
             // find the timestamp value of start date
             $timestamp = strtotime($startDate->format('d-m-Y'));
 
@@ -90,17 +92,37 @@ class CustomCartController extends StorefrontController
             $startDate->modify('+1 day');
         }
         $finalArray = [];
-        foreach ($days as $day)
-        {
+        foreach ($days as $day) {
             foreach ($resultDays as $key => $resultDay) {
-                if($key == $day){
+                if ($key == $day) {
                     $quantityCount = $product['quantity'] * $resultDay;
-                    array_push($finalArray,$quantityCount);
+                    array_push($finalArray, $quantityCount);
                 }
             }
         }
         $totalQuantity = array_sum($finalArray);
 
+        //        Extra=============>
+        $datesWithdays = array();
+        $date = new DateTime($optionsarray['fromDate']);
+        $end = new DateTime($optionsarray['untilDate']);
+        $day_of_week = strtolower($day);
+
+        while ($date <= $end) {
+            $day = strtolower($date->format('l'));
+            if ($day == $day_of_week) {
+                $datesWithdays[] = array(
+                    'date' => $date->format('Y-m-d'),
+                    'day_name' => $date->format('l')
+                );
+            }
+            $date->modify('+1 day');
+        }
+        $daysArray = [];
+        foreach ($datesWithdays as $d){
+            array_push($daysArray, $d['date'] . ' - ' . $d['day_name'] . '<br>');
+        }
+        //        Extra=============>
 
         $lineItem = $this->factory->create([
             'type' => LineItem::PRODUCT_LINE_ITEM_TYPE, // Results in 'product'
@@ -116,6 +138,7 @@ class CustomCartController extends StorefrontController
 
         return $this->finishAction($cart, $request);
     }
+
     private function finishAction(Cart $cart, Request $request): \Symfony\Component\HttpFoundation\Response
     {
         return $this->createActionResponse($request);
