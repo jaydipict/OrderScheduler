@@ -11,6 +11,7 @@ use Shopware\Core\Checkout\Cart\LineItemFactoryHandler\LineItemFactoryInterface;
 use Shopware\Core\Checkout\Cart\LineItemFactoryRegistry;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Recovery\Common\HttpClient\Response;
@@ -87,11 +88,11 @@ class CustomCartController extends StorefrontController
             $weekDay = date('l', $timestamp);
 
             $resultDays[$weekDay] = $resultDays[$weekDay] + 1;
-
             // increase startDate by 1
             $startDate->modify('+1 day');
         }
         $finalArray = [];
+        $datesWithdays = array();
         foreach ($days as $day) {
             foreach ($resultDays as $key => $resultDay) {
                 if ($key == $day) {
@@ -99,30 +100,43 @@ class CustomCartController extends StorefrontController
                     array_push($finalArray, $quantityCount);
                 }
             }
-        }
-        $totalQuantity = array_sum($finalArray);
-
-        //        Extra=============>
-        $datesWithdays = array();
-        $date = new DateTime($optionsarray['fromDate']);
-        $end = new DateTime($optionsarray['untilDate']);
-        $day_of_week = strtolower($day);
-
-        while ($date <= $end) {
-            $day = strtolower($date->format('l'));
-            if ($day == $day_of_week) {
-                $datesWithdays[] = array(
+            //        Extra=============>
+            $date = new DateTime($optionsarray['fromDate']);
+            $end = new DateTime($optionsarray['untilDate']);
+            $day_of_week = strtolower($day);
+            while ($date <= $end) {
+                $day = strtolower($date->format('l'));
+                if ($day == $day_of_week) {
+                    $datesWithdays[$day][] = array(
                     'date' => $date->format('Y-m-d'),
                     'day_name' => $date->format('l')
                 );
+                }
+                $date->modify('+1 day');
             }
-            $date->modify('+1 day');
         }
-        $daysArray = [];
-        foreach ($datesWithdays as $d){
-            array_push($daysArray, $d['date'] . ' - ' . $d['day_name'] . '<br>');
+        $totalQuantity = array_sum($finalArray);
+
+//        dd($days,$resultDays,$finalArray,$datesWithdays,$optionsarray['days']);
+
+        $oneWeekArray = [];
+        if($optionsarray['weeks'] == 'One Week'){
+//            dd($days);
+            foreach($days as $f) {
+                $oneWeekArray[$f] = $resultDays[$f];
+                foreach ($datesWithdays as $key =>$datesWithday){
+                    foreach ($datesWithday as $dates){
+                        $newArray = array();
+//                        dump(array_search($dates['day_name'],$oneWeekArray));
+                    }
+                }
+            }
+        }elseif($optionsarray['weeks'] == 'Two Weeks'){
+//            foreach ($datesWithdays as $key =>$datesWithday){
+//                dd($datesWithday);
+//            }
         }
-        //        Extra=============>
+
 
         $lineItem = $this->factory->create([
             'type' => LineItem::PRODUCT_LINE_ITEM_TYPE, // Results in 'product'
@@ -132,7 +146,11 @@ class CustomCartController extends StorefrontController
         ], $context);
         $lineItem->setRemovable(true);
         $lineItem->setStackable(true);
-        $lineItem->setPayload($optionsarray);
+        $lineItem->setPayload([
+        'productNumber'=>$optionsarray,
+        'datesWithdays'=>$datesWithdays]);
+
+//        dd($lineItem->setPayload(['productNumber'=>$optionsarray,'datesWithdays'=>$datesWithdays]),$optionsarray);
 
         $this->cartService->add($cart, $lineItem, $context);
 
