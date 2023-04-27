@@ -31,6 +31,7 @@
         "error-endDate" : "Please enter until date.",
         "error-orderdays" : "Please select the days.",
         "error-weeks" : "Please select the weeks.",
-        "error-endDatechk" : "Please enter the greater than from date."
+        "error-endDatechk" : "Please enter the greater than from date.",
+        "date-day-name" : "1 line in the basket with 1 product and for the date:"
     }
 }

@@ -5,6 +5,7 @@
         "cart-schedule" : "Delivery Schedule : ",
         "label-from" : "From",
         "label-until" : "Until",
-        "label-on" : "On"
+        "label-on" : "On",
+        "date-day-name" : "1 line in the basket with 1 product and for the date:"
     }
 }

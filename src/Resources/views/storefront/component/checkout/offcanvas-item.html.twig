@@ -1,0 +1,16 @@
+{% sw_extends '@Storefront/storefront/component/checkout/offcanvas-item.html.twig' %}
+
+{% block component_offcanvas_cart_item_container %}
+    {{ parent() }}
+    {% block component_offcanvas_porduct_delivery_time_list %}
+        <div class="cart-item-delivery-list">
+            <p class="offcanvas-cart-tax">
+                <small>
+                    {% for day in lineItem.payload.finalDatesWithday %}
+                        {{'orderScheduler.date-day-name'|trans }}{{ day['date'] }} ({{ day['day_name'] }})</br>
+                    {% endfor %}
+                </small>
+            </p>
+        </div>
+    {% endblock %}
+{% endblock %}

@@ -7,4 +7,9 @@
         {{ $t("set-products.label-on") }} {{ item.payload.days }}
     </span><br>
     <span v-if="item.payload.address">{{ $t("set-products.cart-address") }} {{ item.payload.address }}</span>
+
+    <span v-for="(days, index) in item.payload.finalDatesWithday">
+        {{ $t("set-products.date-day-name") }} {{ days.date }} - {{ days.day_name }}</br>
+    </span>
+
 {% endblock %}

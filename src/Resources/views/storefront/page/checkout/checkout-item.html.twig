@@ -21,5 +21,17 @@
         {{ "orderScheduler.cart-address"|trans }} {{ lineItem.payload.address }}
     </div>
     {% endif %}
+    {% block page_checkout_item_delivert_date_list  %}
+        <div class="cart-item-delivery-date-list">
+            <p class="offcanvas-cart-tax"><small>
+                    {% for day in lineItem.payload.finalDatesWithday %}
+                        {{'orderScheduler.date-day-name'|trans }}{{ day['date'] }} ({{ day['day_name'] }})</br>
+                    {% endfor %}
+                </small>
+            </p>
+        </div>
+    {% endblock %}
 {% endblock %}
+
+
 
