@@ -1,15 +1,14 @@
 {% block sw_order_line_items_grid_column_payload_options %}
     {% parent %}
-    <span v-if="item.payload.fromDate">
-        {{ $t("set-products.cart-schedule") }}
-        {{ $t("set-products.label-from") }} {{ item.payload.fromDate }}
-        {{ $t("set-products.label-until") }} {{ item.payload.untilDate }} , {{ item.payload.weeks }} ,
-        {{ $t("set-products.label-on") }} {{ item.payload.days }}
-    </span><br>
-    <span v-if="item.payload.address">{{ $t("set-products.cart-address") }} {{ item.payload.address }}</span>
+        <span v-if="item.payload.productDetail.fromDate">
+            {{ $tc("set-products.cart-schedule") }}
+            {{ $tc("set-products.label-from") }} {{ item.payload.productDetail.fromDate }}
+            {{ $tc("set-products.label-until") }} {{ item.payload.productDetail.untilDate }} , {{ item.payload.productDetail.weeks }} ,
+            {{ $tc("set-products.label-on") }} {{ item.payload.productDetail.days }}
+        </span><br>
+        <span v-if="item.payload.address">{{ $tc("set-products.cart-address") }} {{ item.payload.productDetail.address }}</span>
 
-    <span v-for="(days, index) in item.payload.finalDatesWithday">
-        {{ $t("set-products.date-day-name") }} {{ days.date }} - {{ days.day_name }}</br>
-    </span>
-
+        <span v-for="(days, index) in item.payload.finalDatesWithday">
+            {{ $tc("set-products.date-day-name",item.payload.productDetail.quantity,{count:item.payload.productDetail.quantity}) }} {{ days.date }} - {{ days.day_name }}</br>
+        </span>
 {% endblock %}

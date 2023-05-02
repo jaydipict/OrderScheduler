@@ -1,10 +1,11 @@
 {
     "set-products": {
-        "title": "Set Product",
+        "title": "Produkt einstellen",
         "cart-address" : "Lieferadresse : ",
         "cart-schedule" : "Lieferungsplan : ",
         "label-from" : "Van",
         "label-until" : "Tot",
-        "label-on" : "OP"
+        "label-on" : "OP",
+        "date-day-name" : "{Anzahl} Stücke geliefert am :"
     }
 }

@@ -16,16 +16,17 @@
         </div>
     {% endif %}
 
-    {% if lineItem.payload.address %}
+    {% if lineItem.payload.productDetail.address %}
     <div class="cart-item-ordernumber">
-        {{ "orderScheduler.cart-address"|trans }} {{ lineItem.payload.address }}
+        {{ "orderScheduler.cart-address"|trans }} {{ lineItem.payload.productDetail.address }}
     </div>
     {% endif %}
     {% block page_checkout_item_delivert_date_list  %}
         <div class="cart-item-delivery-date-list">
-            <p class="offcanvas-cart-tax"><small>
+            <p class="offcanvas-cart-tax">
+                <small>
                     {% for day in lineItem.payload.finalDatesWithday %}
-                        {{'orderScheduler.date-day-name'|trans }}{{ day['date'] }} ({{ day['day_name'] }})</br>
+                        {{'orderScheduler.date-day-name'|trans({"%count%":lineItem.payload.productDetail.quantity}) }}{{ day['date'] }} ({{ day['day_name'] }})</br>
                     {% endfor %}
                 </small>
             </p>

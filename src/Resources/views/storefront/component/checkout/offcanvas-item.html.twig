@@ -7,7 +7,7 @@
             <p class="offcanvas-cart-tax">
                 <small>
                     {% for day in lineItem.payload.finalDatesWithday %}
-                        {{'orderScheduler.date-day-name'|trans }}{{ day['date'] }} ({{ day['day_name'] }})</br>
+                        {{'orderScheduler.date-day-name'|trans({"%count%":lineItem.payload.productDetail.quantity}) }}{{ day['date'] }} ({{ day['day_name'] }})</br>
                     {% endfor %}
                 </small>
             </p>

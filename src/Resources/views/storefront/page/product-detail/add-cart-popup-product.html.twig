@@ -20,6 +20,7 @@
                                 {% block customer_address_container %}
                                     <div class="col-3 form-group"><label>{{ "orderScheduler.label-address"|trans }}</label></div>
                                     <div class="col-9 form-group">
+                                        <input type="hidden" name="option[productId]" value="{{ product.id }}">
                                         <select name="option[address]" class="form-control" id="oderAddress" data-order-scheduler-address>
                                             <option value="">{{ "orderScheduler.option-address"|trans }}</option>
                                             {% for customerAddres in customerAddress %}
@@ -27,6 +28,7 @@
                                                 <option value="{{ addres }}">{{ addres }}</option>
                                             {% endfor %}
                                         </select>
+
                                         <span class="error error-address">{{ "orderScheduler.error-address"|trans }}</span>
                                     </div>
                                 {% endblock %}

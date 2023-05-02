@@ -39,11 +39,12 @@ class CustomCartController extends StorefrontController
      */
     public function add(Cart $cart, SalesChannelContext $context, RequestDataBag $requestDataBag, Request $request): \Symfony\Component\HttpFoundation\Response
     {
-        $options = array();
         $finalDatesWithday = [];
         $lineItems = $request->request->get('lineItems', []);
         $product = \reset($lineItems);
         $optionsarray = array();
+        $optionsarray['quantity'] = $product['quantity'];
+        $optionsarray['id'] = $product['id'];
         $optionsarray['address'] = $requestDataBag->get('option')->get('address');
         $optionsarray['fromDate'] = $requestDataBag->get('option')->get('fromDate');
         $optionsarray['untilDate'] = $requestDataBag->get('option')->get('untilDate');
@@ -84,17 +85,17 @@ class CustomCartController extends StorefrontController
             // increase startDate by 1
             $startDate->modify('+1 day');
         }
-//        $totalQuantity = 0;
         $finalArray = [];
         $datesWithdays = array();
         foreach ($days as $day) {
             foreach ($resultDays as $key => $resultDay) {
                 if ($key == $day) {
+
                     $quantityCount = $product['quantity'] * $resultDay;
                     array_push($finalArray, $quantityCount);
                 }
             }
-            //        Extra=============>
+            //Extra=============>
             $date = new DateTime($optionsarray['fromDate']);
             $end = new DateTime($optionsarray['untilDate']);
             $day_of_week = strtolower($day);
@@ -102,73 +103,211 @@ class CustomCartController extends StorefrontController
                 $day = strtolower($date->format('l'));
                 if ($day == $day_of_week) {
                     $datesWithdays[$day][] = array(
-                    'date' => $date->format('Y-m-d'),
-                    'day_name' => $date->format('l')
-                );
+                        'date' => $date->format('Y-m-d'),
+                        'day_name' => $date->format('l'),
+                    );
                 }
                 $date->modify('+1 day');
             }
         }
-//        $totalQuantity = array_sum($finalArray);
+        if ($optionsarray['weeks'] == 'One Week') {
+            foreach ($datesWithdays as $index => $value) {
+                foreach ($value as $index2 => $values) {
+                    array_push($finalDatesWithday, $values);
+                }
+            }
+            $totalQuantity = count($finalDatesWithday);
+        } elseif ($optionsarray['weeks'] == 'Two Weeks') {
+            foreach ($datesWithdays as $index => $value) {
+                if ($index == 'monday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 2 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'tuesday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 2 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'wednesday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 2 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'thursday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 2 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'friday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 2 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'saturday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 2 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                }
+            }
 
-        $oneWeekArray = [];
-        if($optionsarray['weeks'] == 'One Week'){
-            foreach ($datesWithdays as $datesWithday){
-                foreach ($datesWithday as $diffDay){
-                    $finalDatesWithday[] = $diffDay;
-                }
-                $totalQuantity = count($finalDatesWithday);
-            }
-        }elseif($optionsarray['weeks'] == 'Two Weeks'){
-            foreach ($datesWithdays as $datesWithday){
-                // Remove elements at odd indices
-                foreach ($datesWithday as $index => $value) {
-                    if ($index % 2 == 0) {
-                        $finalDatesWithday[] = $value;
+            $totalQuantity = count($finalDatesWithday);
+        } elseif ($optionsarray['weeks'] == 'Three Weeks') {
+            foreach ($datesWithdays as $index => $value) {
+                if ($index == 'monday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 3 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'tuesday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 3 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'wednesday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 3 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'thursday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 3 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'friday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 3 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'saturday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 3 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
                     }
                 }
-                $totalQuantity = count($finalDatesWithday);
             }
-        }elseif($optionsarray['weeks'] == 'Three Weeks'){
-            foreach ($datesWithdays as $datesWithday){
-                foreach ($datesWithday as $index => $value) {
-                    if ($index % 3 == 0) {
-                        $finalDatesWithday[] = $value;
+            $totalQuantity = count($finalDatesWithday);
+        } elseif ($optionsarray['weeks'] == 'Four Weeks') {
+            foreach ($datesWithdays as $index => $value) {
+                if ($index == 'monday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 4 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'tuesday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 4 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'wednesday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 4 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'thursday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 4 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'friday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 4 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'saturday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 4 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
                     }
                 }
-                $totalQuantity = count($finalDatesWithday);
             }
-        }elseif($optionsarray['weeks'] == 'Four Weeks'){
-            foreach ($datesWithdays as $datesWithday){
-                foreach ($datesWithday as $index => $value) {
-                    if ($index % 4 == 0) {
-                        $finalDatesWithday[] = $value;
+            $totalQuantity = count($finalDatesWithday);
+        } elseif ($optionsarray['weeks'] == 'Five Weeks') {
+            foreach ($datesWithdays as $index => $value) {
+                if ($index == 'monday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 5 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'tuesday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 5 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'wednesday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 5 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'thursday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 5 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'friday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 5 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
+                    }
+                } elseif ($index == 'saturday') {
+                    foreach ($value as $index2 => $values) {
+                        if ($index2 % 5 == 0) {
+                            array_push($finalDatesWithday, $values);
+                        }
                     }
                 }
-                $totalQuantity = count($finalDatesWithday);
             }
-        }elseif($optionsarray['weeks'] == 'Five Weeks'){
-            foreach ($datesWithdays as $datesWithday){
-                foreach ($datesWithday as $index => $value) {
-                    if ($index % 5 == 0) {
-                        $finalDatesWithday[] = $value;
-                    }
-                }
-                $totalQuantity = count($finalDatesWithday);
-            }
+            $totalQuantity = count($finalDatesWithday);
         }
+        asort($finalDatesWithday);
+        $finalQuantity = $totalQuantity * $optionsarray['quantity'];
+
         $lineItem = $this->factory->create([
             'type' => LineItem::PRODUCT_LINE_ITEM_TYPE, // Results in 'product'
             'referencedId' => $product['referencedId'], // this is not a valid UUID, change this to your actual ID!
-            'quantity' => $totalQuantity,
+            'quantity' => $finalQuantity,
+            'totalDays' => $totalQuantity,
             'payload' => $requestDataBag->get('option')
         ], $context);
         $lineItem->setRemovable(true);
         $lineItem->setStackable(true);
         $lineItem->setPayload([
-        'productNumber'=>$optionsarray,
-        'finalDatesWithday'=>$finalDatesWithday]);
+            'productDetail' => $optionsarray,
+            'productId' => $requestDataBag->get('option')->get('productId'),
+            'finalDatesWithday' => $finalDatesWithday,
+        ]);
+        $productIdForMacth = '';
+        foreach ($cart->getLineItems()->getPayload() as $cartProductId) {
+            $productIdForMacth = $cartProductId['productId'];
+        }
+        if ($productIdForMacth == $requestDataBag->get('option')->get('productId')) {
 
+            $this->cartService->remove($cart, $requestDataBag->get('option')->get('productId'), $context);
+        }
         $this->cartService->add($cart, $lineItem, $context);
 
         return $this->finishAction($cart, $request);

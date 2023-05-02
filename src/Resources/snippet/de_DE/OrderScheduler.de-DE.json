@@ -32,6 +32,6 @@
         "error-orderdays" : "Bitte wählen Sie die Tage aus.",
         "error-weeks" : "Bitte wählen Sie die Wochen aus.",
         "error-endDatechk" : "Bitte geben Sie das größere als ab Datum ein.",
-        "date-day-name" : "1 Zeile im Warenkorb mit 1 Produkt und für das Datum:"
+        "date-day-name" : "%count% Stücke geliefert am :"
     }
 }

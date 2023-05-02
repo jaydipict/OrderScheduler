@@ -6,6 +6,6 @@
         "label-from" : "From",
         "label-until" : "Until",
         "label-on" : "On",
-        "date-day-name" : "1 line in the basket with 1 product and for the date:"
+        "date-day-name" : "{count} pieces delivered on :"
     }
 }

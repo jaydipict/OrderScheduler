@@ -1,7 +1,6 @@
 {% sw_extends '@Storefront/storefront/page/product-detail/buy-widget-form.html.twig' %}
 
 {% block page_product_detail_buy_form_inner %}
-    {# Check customer is login or not and Set product condation #}
     {% if not context.customer or page.product.extensions.setProduct.active == false  or  page.product.extensions.setProduct.active == null %}
         {{ parent() }}
     {% else %}
